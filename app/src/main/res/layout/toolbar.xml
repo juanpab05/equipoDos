@@ -1,0 +1,98 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/toolbar_bg">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivStars"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="20dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/icon_star" />
+
+                    <ImageView
+                        android:id="@+id/ivSound"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="20dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/icon_sound_on" />
+
+                    <ImageView
+                        android:id="@+id/ivController"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="20dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/icon_controller" />
+
+                    <ImageView
+                        android:id="@+id/ivPlus"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/icon_plus" />
+
+                    <ImageView
+                        android:id="@+id/ivShare"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:padding="2dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="20dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:src="@drawable/icon_share" />
+
+
+                </LinearLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
+
+
+
+
+
