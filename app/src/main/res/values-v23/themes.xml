@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <style name="Theme.Pico_botella" parent="Base.Theme.Pico_botella">
+    <!-- Transparent system bars for edge-to-edge. -->
+    <item name="android:navigationBarColor">@android:color/transparent</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+    <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+      <item name="android:windowSplashScreenBackground">@color/black</item>
+    <item name="android:windowSplashScreenAnimatedIcon">@drawable/picobotella_foreground</item>
+    <item name="android:windowSplashScreenBrandingImage">@drawable/splash_title</item>
+  </style>
+</resources>
