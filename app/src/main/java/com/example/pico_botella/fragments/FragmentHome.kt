@@ -1,6 +1,7 @@
 package com.example.pico_botella.fragments
 
 import android.R.attr.ordering
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ class FragmentHome : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttonBlinking()
+        playMusic()
     }
 
     fun buttonBlinking(){
@@ -46,6 +48,19 @@ class FragmentHome : Fragment() {
 
         // Start the animation on the image view
         binding.ivButtonSpin.startAnimation(animationSet)
+    }
+
+    fun playMusic(){
+        val playBtn = binding.toolbar.ivSound
+        val mediaPlayer = MediaPlayer.create(context, R.raw.home)
+        playBtn.setOnClickListener {
+            if (mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+            } else {
+                mediaPlayer.start() // no need to call prepare(); create() does that for you
+            }
+        }
+
     }
 
 }
