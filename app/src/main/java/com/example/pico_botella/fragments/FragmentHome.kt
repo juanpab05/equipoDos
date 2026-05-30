@@ -1,10 +1,16 @@
 package com.example.pico_botella.fragments
 
+import android.R.attr.ordering
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
 
@@ -18,6 +24,43 @@ class FragmentHome : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater)
         binding.lifecycleOwner = this
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        buttonBlinking()
+        playMusic()
+    }
+
+    fun buttonBlinking(){
+        // 1. Fade Out Animation
+        val fadeOut = AlphaAnimation(1.0f, 0.7f).apply {
+            duration = 1000 // 1 seconds
+            repeatCount = Animation.INFINITE // Loop forever
+            repeatMode = Animation.REVERSE   // Reverse animation after loop
+            interpolator = DecelerateInterpolator()
+        }
+
+        // 2. Create AnimationSet
+        val animationSet = AnimationSet(true).apply {
+            // Add animation to the set
+            addAnimation(fadeOut)
+        }
+
+        // Start the animation on the image view
+        binding.ivButtonSpin.startAnimation(animationSet)
+    }
+
+    fun playMusic(){
+        val playBtn = binding.toolbar.ivSound
+        val mediaPlayer = MediaPlayer.create(context, R.raw.home)
+        playBtn.setOnClickListener {
+            if (mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+            } else {
+                mediaPlayer.start() // no need to call prepare(); create() does that for you
+            }
+        }
+
     }
 
 }
