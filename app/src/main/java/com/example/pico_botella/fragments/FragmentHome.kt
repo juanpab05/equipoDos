@@ -1,6 +1,7 @@
 package com.example.pico_botella.fragments
 
 import android.R.attr.ordering
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ class FragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttonBlinking()
         playMusic()
+        shareApp()
     }
 
     fun buttonBlinking(){
@@ -61,6 +63,25 @@ class FragmentHome : Fragment() {
             }
         }
 
+    }
+
+    fun share(){
+        val message = getString(R.string.share_app)
+
+        val intent = Intent().apply{
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(intent, null)
+        startActivity(shareIntent)
+    }
+
+    fun shareApp(){
+        val shareBtn = binding.toolbar.ivShare
+        shareBtn.setOnClickListener {
+            share()
+        }
     }
 
 }
