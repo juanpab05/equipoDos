@@ -41,6 +41,7 @@
             android:textSize="80sp"
             android:textColor="@color/orange"
             android:textStyle="bold"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/ivBottle"
             app:layout_constraintBottom_toBottomOf="@id/ivBottle"
             app:layout_constraintStart_toStartOf="parent"
