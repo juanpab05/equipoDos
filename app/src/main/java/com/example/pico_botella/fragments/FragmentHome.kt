@@ -20,6 +20,8 @@ import com.example.pico_botella.databinding.FragmentHomeBinding
 
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    private var backgroundMusic: MediaPlayer? = null   // ahora es propiedad de clase
+    private var wasMusicPlaying = false                // recuerda si sonaba antes de girar
     private var currentRotation = 0f          // guarda la posición de la botella
 
     override fun onCreateView(
@@ -80,6 +82,7 @@ class FragmentHome : Fragment() {
                 spinBtn.visibility = View.VISIBLE // Reaparece el boton de girar la botella
                 buttonBlinking() // Se le vuelve a aplicar la animación
                 // Aqui deberia ir la funcion de la HU 12
+                // Además la HU 12 debe encargarse de reanudar la musica de fondo si estaba sonando
             }
         }
 
@@ -104,9 +107,9 @@ class FragmentHome : Fragment() {
             currentRotation = finalAngle % 360 // actualizar la posición de la botella
 
             doOnEnd {
-                spinningSound.pause()
-                spinningSound.release()
-                countdown()
+                spinningSound.pause() // Pausar el sonido de la botella al terminar la animación
+                spinningSound.release() // Liberamos memoria
+                countdown() // Activamos el contador
             }
 
             start()
@@ -122,21 +125,24 @@ class FragmentHome : Fragment() {
             spinBtn.clearAnimation() // Primero limpia la animación del boton
             spinBtn.visibility = View.INVISIBLE // Desaparece el botón
 
+            wasMusicPlaying = backgroundMusic?.isPlaying == true // Setear la variable a true si la musica de fondo está sonando
+            if (wasMusicPlaying) backgroundMusic?.pause() // Detener la musica de fondo si estaba sonando
+
             animationBottle() // Inicia la animación de la botella
         }
     }
 
     fun playMusic(){
         val playBtn = binding.toolbar.ivSound
-        val mediaPlayer = MediaPlayer.create(context, R.raw.home)
+        backgroundMusic = MediaPlayer.create(context, R.raw.home)
+
         playBtn.setOnClickListener {
-            if (mediaPlayer.isPlaying){
-            mediaPlayer.pause()
+            if (backgroundMusic?.isPlaying == true){
+                backgroundMusic?.pause()
             } else {
-                mediaPlayer.start() // no need to call prepare(); create() does that for you
+                backgroundMusic?.start()
             }
         }
-
     }
 
     fun share(){
