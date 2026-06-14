@@ -1,6 +1,7 @@
 package com.example.pico_botella.fragments
 
 import android.R.attr.ordering
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -12,11 +13,14 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
+import androidx.core.animation.doOnEnd
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
 
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    private var currentRotation = 0f          // guarda la posición de la botella
+    private var isSpinning = false            // bloqueo del botón si la botella está girando
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +33,7 @@ class FragmentHome : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttonBlinking()
+        spinBottle()
         playMusic()
         shareApp()
     }
@@ -50,6 +55,43 @@ class FragmentHome : Fragment() {
 
         // Start the animation on the image view
         binding.ivButtonSpin.startAnimation(animationSet)
+    }
+
+    fun animationBottle(){
+        if (isSpinning) return // Evitar animar la botella si ya está girando
+
+        val bottle = binding.ivBottle
+        val spinningSound = MediaPlayer.create(context, R.raw.spinning)
+
+        val steps = (0 until 360 step 30).toList() // [0, 30, 60, 90, ..., 330]
+        val stopPosition = steps.random().toFloat()
+
+        // Giros completos + parada en el grado aleatorio
+        val fullRotations = 360f * 3 // 3 vueltas completas antes de parar
+        val finalAngle = currentRotation + fullRotations + stopPosition
+
+        ObjectAnimator.ofFloat(bottle, "rotation", currentRotation, finalAngle).apply {
+            spinningSound.start()
+
+            duration = 4000
+            interpolator = DecelerateInterpolator() // arranca rápido, frena suave
+            currentRotation = finalAngle % 360 // actualizar la posición de la botella
+
+            doOnEnd {
+                isSpinning = false
+                spinningSound.pause()
+            }
+
+            start()
+        }
+    }
+
+    fun spinBottle(){
+        val spinBtn = binding.ivButtonSpin
+        spinBtn.setOnClickListener {
+            animationBottle()
+            isSpinning = true
+        }
     }
 
     fun playMusic(){
