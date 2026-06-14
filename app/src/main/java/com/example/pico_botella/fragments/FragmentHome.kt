@@ -21,7 +21,6 @@ import com.example.pico_botella.databinding.FragmentHomeBinding
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private var currentRotation = 0f          // guarda la posición de la botella
-    private var isSpinning = false            // bloqueo del botón si la botella está girando
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,17 +64,22 @@ class FragmentHome : Fragment() {
     }
 
     fun countdown(){
+        val spinBtn = binding.ivButtonSpin
         val countdownText = binding.tvCountdown
-        countdownText.visibility = View.VISIBLE
+
+        countdownText.visibility = View.VISIBLE // Volver visible el contador
 
         val timer = object : CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000 + 1
-                countdownText.text = secondsLeft.toString()
+                countdownText.text = secondsLeft.toString() // El contador va cambiando el numero
             }
 
             override fun onFinish() {
-                countdownText.text = "0"
+                countdownText.text = "0" // El contador acaba en 0
+                spinBtn.visibility = View.VISIBLE // Reaparece el boton de girar la botella
+                buttonBlinking() // Se le vuelve a aplicar la animación
+                // Aqui deberia ir la funcion de la HU 12
             }
         }
 
@@ -83,8 +87,6 @@ class FragmentHome : Fragment() {
     }
 
     fun animationBottle(){
-        if (isSpinning) return // Evitar animar la botella si ya está girando
-
         val bottle = binding.ivBottle
         val spinningSound = MediaPlayer.create(context, R.raw.spinning)
 
@@ -102,8 +104,8 @@ class FragmentHome : Fragment() {
             currentRotation = finalAngle % 360 // actualizar la posición de la botella
 
             doOnEnd {
-                isSpinning = false
                 spinningSound.pause()
+                spinningSound.release()
                 countdown()
             }
 
@@ -115,9 +117,12 @@ class FragmentHome : Fragment() {
         val spinBtn = binding.ivButtonSpin
 
         spinBtn.setOnClickListener {
-            restartCountdown()
-            animationBottle()
-            isSpinning = true
+            restartCountdown() // Reinicia y esconde el contador
+
+            spinBtn.clearAnimation() // Primero limpia la animación del boton
+            spinBtn.visibility = View.INVISIBLE // Desaparece el botón
+
+            animationBottle() // Inicia la animación de la botella
         }
     }
 
