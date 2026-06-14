@@ -15,6 +15,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import androidx.core.animation.doOnEnd
+import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
 
@@ -34,13 +36,12 @@ class FragmentHome : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        buttonBlinking()
+        blinkingButtonAnimation()
+        touchToolbarButton()
         spinBottle()
-        playMusic()
-        shareApp()
     }
 
-    fun buttonBlinking(){
+    fun blinkingButtonAnimation(){
         // 1. Fade Out Animation
         val fadeOut = AlphaAnimation(1.0f, 0.7f).apply {
             duration = 1000 // 1 seconds
@@ -57,6 +58,61 @@ class FragmentHome : Fragment() {
 
         // Start the animation on the image view
         binding.ivButtonSpin.startAnimation(animationSet)
+    }
+
+    //Controla que ocurre al presionar un boton de la toolbar
+    fun touchToolbarButton(){
+        val expand = ScaleAnimation(1.0F, 1.3F, 1.0F, 1.3F).apply{
+            duration = 250 //  250 milliseconds
+            repeatCount = 1
+            repeatMode = Animation.REVERSE
+        }
+        val move = TranslateAnimation(0F, -20F, 0F, -35F).apply{
+            duration = 250
+            repeatCount = 1
+            repeatMode = Animation.REVERSE
+        }
+
+        val animationSet = AnimationSet(true).apply {
+            // Add animations to the set
+            addAnimation(expand)
+            addAnimation(move)
+        }
+
+        //Media player para reproducir la canción de home
+        backgroundMusic = MediaPlayer.create(context, R.raw.home)
+
+        val rateBtn = binding.toolbar.ivStars
+        val playBtn = binding.toolbar.ivSound
+        val rulesBtn = binding.toolbar.ivController
+        val addBtn = binding.toolbar.ivPlus
+        val shareBtn = binding.toolbar.ivShare
+
+        rateBtn.setOnClickListener {
+            rateBtn.startAnimation(animationSet)
+        }
+
+        playBtn.setOnClickListener {
+            playBtn.startAnimation(animationSet)
+            if (backgroundMusic?.isPlaying == true){
+                backgroundMusic?.pause()
+            } else {
+                backgroundMusic?.start()
+            }
+        }
+
+        rulesBtn.setOnClickListener {
+            rulesBtn.startAnimation(animationSet)
+        }
+
+        addBtn.setOnClickListener {
+            addBtn.startAnimation(animationSet)
+        }
+
+        shareBtn.setOnClickListener {
+            shareBtn.startAnimation(animationSet)
+            share()
+        }
     }
 
     fun restartCountdown(){
@@ -80,7 +136,7 @@ class FragmentHome : Fragment() {
             override fun onFinish() {
                 countdownText.text = "0" // El contador acaba en 0
                 spinBtn.visibility = View.VISIBLE // Reaparece el boton de girar la botella
-                buttonBlinking() // Se le vuelve a aplicar la animación
+                blinkingButtonAnimation() // Se le vuelve a aplicar la animación
                 // Aqui deberia ir la funcion de la HU 12
                 // Además la HU 12 debe encargarse de reanudar la musica de fondo si estaba sonando
             }
@@ -132,19 +188,6 @@ class FragmentHome : Fragment() {
         }
     }
 
-    fun playMusic(){
-        val playBtn = binding.toolbar.ivSound
-        backgroundMusic = MediaPlayer.create(context, R.raw.home)
-
-        playBtn.setOnClickListener {
-            if (backgroundMusic?.isPlaying == true){
-                backgroundMusic?.pause()
-            } else {
-                backgroundMusic?.start()
-            }
-        }
-    }
-
     fun share(){
         val message = getString(R.string.share_app)
 
@@ -155,13 +198,6 @@ class FragmentHome : Fragment() {
         }
         val shareIntent = Intent.createChooser(intent, null)
         startActivity(shareIntent)
-    }
-
-    fun shareApp(){
-        val shareBtn = binding.toolbar.ivShare
-        shareBtn.setOnClickListener {
-            share()
-        }
     }
 
 }
