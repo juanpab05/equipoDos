@@ -1,6 +1,5 @@
 package com.example.pico_botella.fragments
 
-import android.R.attr.ordering
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.media.MediaPlayer
@@ -19,6 +18,7 @@ import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
+import androidx.core.net.toUri
 
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -90,6 +90,8 @@ class FragmentHome : Fragment() {
 
         rateBtn.setOnClickListener {
             rateBtn.startAnimation(animationSet)
+
+            rateApp()
         }
 
         playBtn.setOnClickListener {
@@ -199,5 +201,14 @@ class FragmentHome : Fragment() {
         val shareIntent = Intent.createChooser(intent, null)
         startActivity(shareIntent)
     }
+
+    fun rateApp() {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            "https://play.google.com/store/apps/details?id=com.nequi.MobileApp&hl=es_419&gl=es"
+                .toUri())
+        startActivity(intent)
+    }
+
 
 }
