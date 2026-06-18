@@ -54,4 +54,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:${navVersion}")
     implementation("androidx.navigation:navigation-ui-ktx:${navVersion}")
     implementation("androidx.navigation:navigation-common:${navVersion}")
+    //MVVM: ViewModel + LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    //Animación de triunfo
+    implementation(libs.lottie)
 }
