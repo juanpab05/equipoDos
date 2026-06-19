@@ -1,4 +1,4 @@
-package com.example.pico_botella.view
+package com.example.pico_botella.view.fragment
 
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -134,6 +134,10 @@ class FragmentHome : Fragment() {
 
         addBtn.setOnClickListener {
             addBtn.startAnimation(animationSet)
+            val wasPlaying = backgroundMusic?.isPlaying == true
+            if (wasPlaying) backgroundMusic?.pause()
+            homeViewModel.setMusicPlaying(wasPlaying)
+            findNavController().navigate(R.id.action_fragmentHome_to_fragmentChallenges)
         }
 
         shareBtn.setOnClickListener {

@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/dark_gray"
-        tools:context=".view.FragmentRules">
+        tools:context=".view.fragment.FragmentRules">
 
         <!-- Toolbar personalizada con título "Reglas del Juego" y flecha atrás -->
         <androidx.constraintlayout.widget.ConstraintLayout

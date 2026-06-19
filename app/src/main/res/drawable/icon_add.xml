@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Círculo naranja -->
+    <path
+        android:fillColor="@color/orange"
+        android:pathData="M32,32m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0" />
+
+    <!-- Cruz blanca fina -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M29,18h6v11h11v6h-11v11h-6v-11h-11v-6h11z" />
+
+</vector>

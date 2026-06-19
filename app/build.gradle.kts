@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -59,4 +60,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     //Animación de triunfo
     implementation(libs.lottie)
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }
