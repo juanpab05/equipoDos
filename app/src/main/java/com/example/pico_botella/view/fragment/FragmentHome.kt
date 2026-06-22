@@ -21,18 +21,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
+import com.example.pico_botella.view.dialog.DialogSpinResult
 import com.example.pico_botella.viewmodel.HomeViewModel
 
 class FragmentHome : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
-    // Se comparte con FragmentReglas a través del Activity para que el estado
-    // del audio de fondo sobreviva la navegación entre pantallas (HU 5.0, Criterio 1 y 3).
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private var backgroundMusic: MediaPlayer? = null   // ahora es propiedad de clase
-    private var wasMusicPlaying = false                // recuerda si sonaba antes de girar
-    private var currentRotation = 0f          // guarda la posición de la botella
+    private var backgroundMusic: MediaPlayer? = null
+    private var wasMusicPlaying = false
+    private var currentRotation = 0f
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,40 +46,44 @@ class FragmentHome : Fragment() {
         blinkingButtonAnimation()
         touchToolbarButton()
         spinBottle()
+        observeRandomChallenge()
     }
 
     override fun onResume() {
         super.onResume()
-        // HU 5.0 - Criterio 3: al volver desde "Reglas del juego" (con la flecha
-        // atrás), si el audio de fondo estaba en ON antes de salir, se reanuda aquí.
         if (homeViewModel.isMusicPlaying.value == true && backgroundMusic?.isPlaying == false) {
             backgroundMusic?.start()
         }
     }
 
+    private fun observeRandomChallenge() {
+        homeViewModel.randomChallenge.observe(viewLifecycleOwner) { challenge ->
+            if (challenge != null) {
+                homeViewModel.clearRandomChallenge()
+                val dialog = DialogSpinResult(challenge.description)
+                dialog.show(parentFragmentManager, "DialogSpinResult")
+            }
+        }
+    }
+
     fun blinkingButtonAnimation(){
-        // 1. Fade Out Animation
         val fadeOut = AlphaAnimation(1.0f, 0.7f).apply {
-            duration = 1000 // 1 seconds
-            repeatCount = Animation.INFINITE // Loop forever
-            repeatMode = Animation.REVERSE   // Reverse animation after loop
+            duration = 1000
+            repeatCount = Animation.INFINITE
+            repeatMode = Animation.REVERSE
             interpolator = DecelerateInterpolator()
         }
 
-        // 2. Create AnimationSet
         val animationSet = AnimationSet(true).apply {
-            // Add animation to the set
             addAnimation(fadeOut)
         }
 
-        // Start the animation on the image view
         binding.ivButtonSpin.startAnimation(animationSet)
     }
 
-    //Controla que ocurre al presionar un boton de la toolbar
     fun touchToolbarButton(){
         val expand = ScaleAnimation(1.0F, 1.3F, 1.0F, 1.3F).apply{
-            duration = 250 //  250 milliseconds
+            duration = 250
             repeatCount = 1
             repeatMode = Animation.REVERSE
         }
@@ -91,12 +94,10 @@ class FragmentHome : Fragment() {
         }
 
         val animationSet = AnimationSet(true).apply {
-            // Add animations to the set
             addAnimation(expand)
             addAnimation(move)
         }
 
-        //Media player para reproducir la canción de home
         backgroundMusic = MediaPlayer.create(context, R.raw.home)
 
         val rateBtn = binding.toolbar.ivStars
@@ -122,8 +123,6 @@ class FragmentHome : Fragment() {
 
         rulesBtn.setOnClickListener {
             rulesBtn.startAnimation(animationSet)
-            // Si el audio de fondo está en ON al entrar
-            // a "Reglas del juego", se debe pausar.
             val wasPlaying = backgroundMusic?.isPlaying == true
 
             if (wasPlaying) backgroundMusic?.pause()
@@ -156,20 +155,20 @@ class FragmentHome : Fragment() {
         val spinBtn = binding.ivButtonSpin
         val countdownText = binding.tvCountdown
 
-        countdownText.visibility = View.VISIBLE // Volver visible el contador
+        countdownText.visibility = View.VISIBLE
 
         val timer = object : CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000 + 1
-                countdownText.text = secondsLeft.toString() // El contador va cambiando el numero
+                countdownText.text = secondsLeft.toString()
             }
 
             override fun onFinish() {
-                countdownText.text = "0" // El contador acaba en 0
-                spinBtn.visibility = View.VISIBLE // Reaparece el boton de girar la botella
-                blinkingButtonAnimation() // Se le vuelve a aplicar la animación
-                // Aqui deberia ir la funcion de la HU 12
-                // Además la HU 12 debe encargarse de reanudar la musica de fondo si estaba sonando
+                countdownText.text = "0"
+                spinBtn.visibility = View.VISIBLE
+                blinkingButtonAnimation()
+
+                homeViewModel.loadRandomChallenge()
             }
         }
 
@@ -180,9 +179,9 @@ class FragmentHome : Fragment() {
         val bottle = binding.ivBottle
         val spinningSound = MediaPlayer.create(context, R.raw.spinning)
 
-        val angles = (0 until 360 step 30).toList() // [0, 30, 60, 90, ..., 330]
+        val angles = (0 until 360 step 30).toList()
         val stopPosition = angles.random().toFloat()
-        val fullRotations = 360f * 3 // 3 vueltas completas antes de parar
+        val fullRotations = 360f * 3
 
         val finalAngle = currentRotation + fullRotations + stopPosition
 
@@ -190,13 +189,13 @@ class FragmentHome : Fragment() {
             spinningSound.start()
 
             duration = 4000
-            interpolator = DecelerateInterpolator() // arranca rápido, frena suave
-            currentRotation = finalAngle % 360 // actualizar la posición de la botella
+            interpolator = DecelerateInterpolator()
+            currentRotation = finalAngle % 360
 
             doOnEnd {
-                spinningSound.pause() // Pausar el sonido de la botella al terminar la animación
-                spinningSound.release() // Liberamos memoria
-                countdown() // Activamos el contador
+                spinningSound.pause()
+                spinningSound.release()
+                countdown()
             }
 
             start()
@@ -207,15 +206,15 @@ class FragmentHome : Fragment() {
         val spinBtn = binding.ivButtonSpin
 
         spinBtn.setOnClickListener {
-            restartCountdown() // Reinicia y esconde el contador
+            restartCountdown()
 
-            spinBtn.clearAnimation() // Primero limpia la animación del boton
-            spinBtn.visibility = View.INVISIBLE // Desaparece el botón
+            spinBtn.clearAnimation()
+            spinBtn.visibility = View.INVISIBLE
 
-            wasMusicPlaying = backgroundMusic?.isPlaying == true // Setear la variable a true si la musica de fondo está sonando
-            if (wasMusicPlaying) backgroundMusic?.pause() // Detener la musica de fondo si estaba sonando
+            wasMusicPlaying = backgroundMusic?.isPlaying == true
+            if (wasMusicPlaying) backgroundMusic?.pause()
 
-            animationBottle() // Inicia la animación de la botella
+            animationBottle()
         }
     }
 
