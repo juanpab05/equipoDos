@@ -1,11 +1,10 @@
-package com.example.pico_botella.fragments
+package com.example.pico_botella.view.fragment
 
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +12,24 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
-import androidx.core.animation.doOnEnd
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
+import androidx.core.animation.doOnEnd
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.pico_botella.R
 import com.example.pico_botella.databinding.FragmentHomeBinding
-import androidx.core.net.toUri
+import com.example.pico_botella.viewmodel.HomeViewModel
 
 class FragmentHome : Fragment() {
+
     private lateinit var binding: FragmentHomeBinding
+
+    // Se comparte con FragmentReglas a través del Activity para que el estado
+    // del audio de fondo sobreviva la navegación entre pantallas (HU 5.0, Criterio 1 y 3).
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private var backgroundMusic: MediaPlayer? = null   // ahora es propiedad de clase
     private var wasMusicPlaying = false                // recuerda si sonaba antes de girar
     private var currentRotation = 0f          // guarda la posición de la botella
@@ -39,6 +47,15 @@ class FragmentHome : Fragment() {
         blinkingButtonAnimation()
         touchToolbarButton()
         spinBottle()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // HU 5.0 - Criterio 3: al volver desde "Reglas del juego" (con la flecha
+        // atrás), si el audio de fondo estaba en ON antes de salir, se reanuda aquí.
+        if (homeViewModel.isMusicPlaying.value == true && backgroundMusic?.isPlaying == false) {
+            backgroundMusic?.start()
+        }
     }
 
     fun blinkingButtonAnimation(){
@@ -105,10 +122,22 @@ class FragmentHome : Fragment() {
 
         rulesBtn.setOnClickListener {
             rulesBtn.startAnimation(animationSet)
+            // Si el audio de fondo está en ON al entrar
+            // a "Reglas del juego", se debe pausar.
+            val wasPlaying = backgroundMusic?.isPlaying == true
+
+            if (wasPlaying) backgroundMusic?.pause()
+            homeViewModel.setMusicPlaying(wasPlaying)
+
+            findNavController().navigate(R.id.action_fragmentHome_to_fragmentRules)
         }
 
         addBtn.setOnClickListener {
             addBtn.startAnimation(animationSet)
+            val wasPlaying = backgroundMusic?.isPlaying == true
+            if (wasPlaying) backgroundMusic?.pause()
+            homeViewModel.setMusicPlaying(wasPlaying)
+            findNavController().navigate(R.id.action_fragmentHome_to_fragmentChallenges)
         }
 
         shareBtn.setOnClickListener {
@@ -206,9 +235,8 @@ class FragmentHome : Fragment() {
         val intent = Intent(
             Intent.ACTION_VIEW,
             "https://play.google.com/store/apps/details?id=com.nequi.MobileApp&hl=es_419&gl=es"
-                .toUri())
+                .toUri()
+        )
         startActivity(intent)
     }
-
-
 }

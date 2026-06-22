@@ -7,7 +7,27 @@
 
     <fragment
         android:id="@+id/fragmentHome"
-        android:name="com.example.pico_botella.fragments.FragmentHome"
+        android:name="com.example.pico_botella.view.fragment.FragmentHome"
         android:label="FragmentHome"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentRules"
+            app:destination="@id/fragmentRules" />
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentChallenges"
+            app:destination="@id/fragmentChallenges" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentRules"
+        android:name="com.example.pico_botella.view.fragment.FragmentRules"
+        android:label="FragmentRules"
+        tools:layout="@layout/fragment_rules" />
+
+    <fragment
+        android:id="@+id/fragmentChallenges"
+        android:name="com.example.pico_botella.view.fragment.FragmentChallenges"
+        android:label="FragmentChallenges"
+        tools:layout="@layout/fragment_challenges" />
+
 </navigation>
