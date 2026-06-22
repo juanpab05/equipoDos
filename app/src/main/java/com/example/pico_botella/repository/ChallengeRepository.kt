@@ -18,4 +18,6 @@ class ChallengeRepository(private val challengeDao: ChallengeDao) {
 
     // (HU 9.0)
     suspend fun delete(challenge: Challenge) = challengeDao.deleteChallenge(challenge)
+
+    suspend fun getRandomChallenge(): Challenge? = challengeDao.getRandomChallenge()
 }
