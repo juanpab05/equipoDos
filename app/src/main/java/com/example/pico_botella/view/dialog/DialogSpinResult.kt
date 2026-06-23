@@ -1,6 +1,7 @@
 package com.example.pico_botella.view.dialog
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 import androidx.core.graphics.drawable.toDrawable
 
 class DialogSpinResult(
-    private val challengeDescription: String
+    private val challengeDescription: String,
+    private val onDismiss: () -> Unit = {}
 ) : DialogFragment() {
 
     private var _binding: DialogSpinResultBinding? = null
@@ -43,6 +45,11 @@ class DialogSpinResult(
         )
 
         return dialog
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismiss()
     }
 
     private fun loadRandomPokemon() {
