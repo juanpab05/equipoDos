@@ -58,11 +58,13 @@ class FragmentHome : Fragment() {
 
     private fun observeRandomChallenge() {
         homeViewModel.randomChallenge.observe(viewLifecycleOwner) { challenge ->
-            if (challenge != null) {
-                homeViewModel.clearRandomChallenge()
-                val dialog = DialogSpinResult(challenge.description)
-                dialog.show(parentFragmentManager, "DialogSpinResult")
+            if (challenge == null) return@observe
+
+            homeViewModel.clearRandomChallenge()
+            val dialog = DialogSpinResult(challenge.description) {
+                if (wasMusicPlaying) backgroundMusic?.start()
             }
+            dialog.show(parentFragmentManager, "DialogSpinResult")
         }
     }
 
