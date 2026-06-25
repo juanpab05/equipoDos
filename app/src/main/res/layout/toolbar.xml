@@ -44,7 +44,7 @@
                         android:layout_marginEnd="20dp"
                         android:background="?selectableItemBackgroundBorderless"
                         android:clickable="true"
-                        android:src="@drawable/icon_sound_off" />
+                        android:src="@drawable/icon_sound_on" />
 
                     <ImageView
                         android:id="@+id/ivController"

@@ -30,7 +30,9 @@ class FragmentHome : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
     private var backgroundMusic: MediaPlayer? = null
-    private var wasMusicPlaying = false
+    private var wasMusicPlaying = true
+
+    private var firstTime = true //Indica que es necesario empezar la musica desde 0
     private var currentRotation = 0f
 
     override fun onCreateView(
@@ -45,18 +47,30 @@ class FragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         blinkingButtonAnimation()
         touchToolbarButton()
+        createMusic()
         spinBottle()
         observeRandomChallenge()
     }
 
     override fun onResume() {
         super.onResume()
-        if (homeViewModel.isMusicPlaying.value == true && backgroundMusic?.isPlaying == false) {
+        if (homeViewModel.isMusicPlaying.value == true) {
             backgroundMusic?.start()
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (backgroundMusic?.isPlaying == true){
+            homeViewModel.setMusicPlaying(true)
+            backgroundMusic?.pause()
+        } else {
+            homeViewModel.setMusicPlaying(false)
+        }
+    }
+
     private fun observeRandomChallenge() {
+        val soundBtn = binding.toolbar.ivSound
         homeViewModel.randomChallenge.observe(viewLifecycleOwner) { challenge ->
             if (challenge == null) return@observe
 
@@ -83,6 +97,22 @@ class FragmentHome : Fragment() {
         binding.ivButtonSpin.startAnimation(animationSet)
     }
 
+    fun createMusic(){
+        val soundBtn = binding.toolbar.ivSound
+
+        //Cambiar el icono de sonido a apagado cuando se cambia de ventana
+        if (!firstTime && homeViewModel.isMusicPlaying.value == false) {
+            soundBtn.setImageResource(R.drawable.icon_sound_off)
+        }
+
+        //Crear e iniciar la musica (mediaplayer) solo cuando se crea la app
+        if (firstTime){
+            backgroundMusic = MediaPlayer.create(context, R.raw.home)
+            backgroundMusic?.start()
+            firstTime = false
+        }
+    }
+
     fun touchToolbarButton(){
         val expand = ScaleAnimation(1.0F, 1.3F, 1.0F, 1.3F).apply{
             duration = 250
@@ -100,44 +130,35 @@ class FragmentHome : Fragment() {
             addAnimation(move)
         }
 
-        backgroundMusic = MediaPlayer.create(context, R.raw.home)
-
         val rateBtn = binding.toolbar.ivStars
-        val playBtn = binding.toolbar.ivSound
+        val soundBtn = binding.toolbar.ivSound
         val rulesBtn = binding.toolbar.ivController
         val addBtn = binding.toolbar.ivPlus
         val shareBtn = binding.toolbar.ivShare
 
         rateBtn.setOnClickListener {
             rateBtn.startAnimation(animationSet)
-
             rateApp()
         }
 
-        playBtn.setOnClickListener {
-            playBtn.startAnimation(animationSet)
+        soundBtn.setOnClickListener {
+            soundBtn.startAnimation(animationSet)
             if (backgroundMusic?.isPlaying == true){
+                soundBtn.setImageResource(R.drawable.icon_sound_off)
                 backgroundMusic?.pause()
             } else {
                 backgroundMusic?.start()
+                soundBtn.setImageResource(R.drawable.icon_sound_on)
             }
         }
 
         rulesBtn.setOnClickListener {
             rulesBtn.startAnimation(animationSet)
-            val wasPlaying = backgroundMusic?.isPlaying == true
-
-            if (wasPlaying) backgroundMusic?.pause()
-            homeViewModel.setMusicPlaying(wasPlaying)
-
             findNavController().navigate(R.id.action_fragmentHome_to_fragmentRules)
         }
 
         addBtn.setOnClickListener {
             addBtn.startAnimation(animationSet)
-            val wasPlaying = backgroundMusic?.isPlaying == true
-            if (wasPlaying) backgroundMusic?.pause()
-            homeViewModel.setMusicPlaying(wasPlaying)
             findNavController().navigate(R.id.action_fragmentHome_to_fragmentChallenges)
         }
 
@@ -206,7 +227,7 @@ class FragmentHome : Fragment() {
 
     fun spinBottle(){
         val spinBtn = binding.ivButtonSpin
-
+        val soundBtn = binding.toolbar.ivSound
         spinBtn.setOnClickListener {
             restartCountdown()
 
