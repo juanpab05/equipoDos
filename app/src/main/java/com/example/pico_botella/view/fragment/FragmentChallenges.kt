@@ -13,6 +13,7 @@ import com.example.pico_botella.model.Challenge
 import com.example.pico_botella.view.adapter.ChallengeAdapter
 import com.example.pico_botella.view.dialog.DialogAddChallenge
 import com.example.pico_botella.view.dialog.DialogDeleteChallenge
+import com.example.pico_botella.view.dialog.DialogEditChallenge
 import com.example.pico_botella.viewmodel.ChallengesViewModel
 
 /**
@@ -79,6 +80,10 @@ class FragmentChallenges : Fragment() {
 
     //  (HU 8.0) Cuadro de diálogo editar reto
     private fun showEditDialog(challenge: Challenge) {
+        DialogEditChallenge(
+            challenge = challenge,
+            onSave = { updatedChallenge -> challengesViewModel.update(updatedChallenge) }
+        ).show(parentFragmentManager, "DialogEditarReto")
     }
 
     // ( (HU 9.0) Cuadro de diálogo eliminar reto
