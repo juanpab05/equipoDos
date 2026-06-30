@@ -5,6 +5,8 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
+import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -113,7 +116,7 @@ class FragmentHome : Fragment() {
         }
     }
 
-    fun touchToolbarButton(){
+    fun toolbarButtonAnimation(button: ImageView){
         val expand = ScaleAnimation(1.0F, 1.3F, 1.0F, 1.3F).apply{
             duration = 250
             repeatCount = 1
@@ -130,19 +133,28 @@ class FragmentHome : Fragment() {
             addAnimation(move)
         }
 
+        button.startAnimation(animationSet)
+    }
+
+
+    fun touchToolbarButton(){
         val rateBtn = binding.toolbar.ivStars
         val soundBtn = binding.toolbar.ivSound
         val rulesBtn = binding.toolbar.ivController
         val addBtn = binding.toolbar.ivPlus
         val shareBtn = binding.toolbar.ivShare
+        val handler = Handler(Looper.getMainLooper())
 
         rateBtn.setOnClickListener {
-            rateBtn.startAnimation(animationSet)
-            rateApp()
+            toolbarButtonAnimation(rateBtn)
+
+            handler.postDelayed({
+                rateApp()
+            }, 450)
         }
 
         soundBtn.setOnClickListener {
-            soundBtn.startAnimation(animationSet)
+            toolbarButtonAnimation(soundBtn)
             if (backgroundMusic?.isPlaying == true){
                 soundBtn.setImageResource(R.drawable.icon_sound_off)
                 backgroundMusic?.pause()
@@ -153,18 +165,24 @@ class FragmentHome : Fragment() {
         }
 
         rulesBtn.setOnClickListener {
-            rulesBtn.startAnimation(animationSet)
-            findNavController().navigate(R.id.action_fragmentHome_to_fragmentRules)
+            toolbarButtonAnimation(rulesBtn)
+            handler.postDelayed({
+                findNavController().navigate(R.id.action_fragmentHome_to_fragmentRules)
+            }, 450)
         }
 
         addBtn.setOnClickListener {
-            addBtn.startAnimation(animationSet)
-            findNavController().navigate(R.id.action_fragmentHome_to_fragmentChallenges)
+            toolbarButtonAnimation(addBtn)
+            handler.postDelayed({
+                findNavController().navigate(R.id.action_fragmentHome_to_fragmentChallenges)
+            }, 450)
         }
 
         shareBtn.setOnClickListener {
-            shareBtn.startAnimation(animationSet)
-            share()
+            toolbarButtonAnimation(shareBtn)
+            handler.postDelayed({
+                share()
+            }, 400)
         }
     }
 
