@@ -70,13 +70,13 @@ class FragmentHome : Fragment() {
     }
 
     private fun observeRandomChallenge() {
-        val soundBtn = binding.toolbar.ivSound
         homeViewModel.randomChallenge.observe(viewLifecycleOwner) { challenge ->
             if (challenge == null) return@observe
 
             homeViewModel.clearRandomChallenge()
             val dialog = DialogSpinResult(challenge.description) {
                 if (wasMusicPlaying) backgroundMusic?.start()
+                enableToolbar()
             }
             dialog.show(parentFragmentManager, "DialogSpinResult")
         }
@@ -168,6 +168,40 @@ class FragmentHome : Fragment() {
         }
     }
 
+    fun disableToolbar(){
+        val rateBtn = binding.toolbar.ivStars
+        val soundBtn = binding.toolbar.ivSound
+        val rulesBtn = binding.toolbar.ivController
+        val addBtn = binding.toolbar.ivPlus
+        val shareBtn = binding.toolbar.ivShare
+        val toolbar = binding.toolbar.toolbarInner
+
+        rateBtn.isEnabled = false
+        soundBtn.isEnabled = false
+        rulesBtn.isEnabled = false
+        addBtn.isEnabled = false
+        shareBtn.isEnabled = false
+
+        toolbar.alpha = 0.5f
+    }
+
+    fun enableToolbar(){
+        val rateBtn = binding.toolbar.ivStars
+        val soundBtn = binding.toolbar.ivSound
+        val rulesBtn = binding.toolbar.ivController
+        val addBtn = binding.toolbar.ivPlus
+        val shareBtn = binding.toolbar.ivShare
+        val toolbar = binding.toolbar.toolbarInner
+
+        rateBtn.isEnabled = true
+        soundBtn.isEnabled = true
+        rulesBtn.isEnabled = true
+        addBtn.isEnabled = true
+        shareBtn.isEnabled = true
+
+        toolbar.alpha = 1f
+    }
+
     fun restartCountdown(){
         val countdownText = binding.tvCountdown
         countdownText.text = "3"
@@ -227,10 +261,9 @@ class FragmentHome : Fragment() {
 
     fun spinBottle(){
         val spinBtn = binding.ivButtonSpin
-        val soundBtn = binding.toolbar.ivSound
         spinBtn.setOnClickListener {
             restartCountdown()
-
+            disableToolbar()
             spinBtn.clearAnimation()
             spinBtn.visibility = View.INVISIBLE
 
