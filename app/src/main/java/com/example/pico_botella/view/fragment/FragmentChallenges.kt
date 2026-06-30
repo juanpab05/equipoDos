@@ -12,10 +12,13 @@ import com.example.pico_botella.databinding.FragmentChallengesBinding
 import com.example.pico_botella.model.Challenge
 import com.example.pico_botella.view.adapter.ChallengeAdapter
 import com.example.pico_botella.view.dialog.DialogAddChallenge
+import com.example.pico_botella.view.dialog.DialogDeleteChallenge
+import com.example.pico_botella.view.dialog.DialogEditChallenge
 import com.example.pico_botella.viewmodel.ChallengesViewModel
+
 /**
  * Agregar y listar retos.
- * se lanzan desde esta pantalla.
+ * Los diálogos de agregar, editar y eliminar se lanzan desde esta pantalla.
  */
 class FragmentChallenges : Fragment() {
     private var _binding: FragmentChallengesBinding? = null
@@ -77,10 +80,18 @@ class FragmentChallenges : Fragment() {
 
     //  (HU 8.0) Cuadro de diálogo editar reto
     private fun showEditDialog(challenge: Challenge) {
+        DialogEditChallenge(
+            challenge = challenge,
+            onSave = { updatedChallenge -> challengesViewModel.update(updatedChallenge) }
+        ).show(parentFragmentManager, "DialogEditarReto")
     }
 
     // ( (HU 9.0) Cuadro de diálogo eliminar reto
     private fun showDeleteDialog(challenge: Challenge) {
+        DialogDeleteChallenge(
+            challenge = challenge,
+            onConfirm = { challengesViewModel.delete(it) }
+        ).show(parentFragmentManager, "DialogBorrarReto")
     }
 
     override fun onDestroyView() {
