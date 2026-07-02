@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -54,4 +55,20 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:${navVersion}")
     implementation("androidx.navigation:navigation-ui-ktx:${navVersion}")
     implementation("androidx.navigation:navigation-common:${navVersion}")
+    //MVVM: ViewModel + LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    //Animación de triunfo
+    implementation(libs.lottie)
+    //Carga de imágenes
+    implementation("io.coil-kt:coil:2.7.0")
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    // Retrofit (Cliente HTTP)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+
+    // Convertidor Gson (para transformar JSON a objetos Kotlin)
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }

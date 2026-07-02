@@ -22,24 +22,24 @@ class MainActivity : AppCompatActivity() {
         var aux: Boolean = false
         val handler = Handler(Looper.getMainLooper())
 
-            content.viewTreeObserver.addOnPreDrawListener(
-                object : ViewTreeObserver.OnPreDrawListener {
-                    override fun onPreDraw(): Boolean {
-                        // Check whether the initial data is ready.
-                        handler.postDelayed({
-                            aux=true
-                        }, 4200)
-                        return if (aux) {
-                            // The content is ready. Start drawing.
-                            content.viewTreeObserver.removeOnPreDrawListener(this)
-                            true
-                        } else {
-                            // The content isn't ready. Suspend.
-                            false
-                        }
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    // Check whether the initial data is ready.
+                    handler.postDelayed({
+                        aux=true
+                    }, 4200)
+                    return if (aux) {
+                        // The content is ready. Start drawing.
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        // The content isn't ready. Suspend.
+                        false
                     }
                 }
-            )
+            }
+        )
 
     }
 }
