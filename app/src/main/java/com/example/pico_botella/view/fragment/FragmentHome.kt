@@ -242,14 +242,14 @@ class FragmentHome : Fragment() {
 
         countdownText.visibility = View.VISIBLE
 
-        val timer = object : CountDownTimer(3000, 1000) {
+        val timer = object : CountDownTimer(4000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val secondsLeft = millisUntilFinished / 1000 + 1
+                val secondsLeft = millisUntilFinished / 1000
                 countdownText.text = secondsLeft.toString()
             }
 
             override fun onFinish() {
-                countdownText.text = "0"
+                countdownText.visibility = View.INVISIBLE
                 spinBtn.visibility = View.VISIBLE
                 blinkingButtonAnimation()
 
