@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,8 +74,17 @@ class FragmentHome : Fragment() {
     }
 
     private fun observeRandomChallenge() {
+        var count = 0
         homeViewModel.randomChallenge.observe(viewLifecycleOwner) { challenge ->
-            if (challenge == null) return@observe
+            count += 1
+            if (challenge == null){
+                if (count==1) {
+                    if (wasMusicPlaying) backgroundMusic?.start()
+                    enableToolbar()
+                }
+                count = 0
+                return@observe
+            }
 
             homeViewModel.clearRandomChallenge()
             val dialog = DialogSpinResult(challenge.description) {
